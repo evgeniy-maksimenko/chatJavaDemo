@@ -4,6 +4,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -70,8 +72,21 @@ public class ChatPanel extends JFrame {
             e.printStackTrace();
         }
 
+        addWindowListener(new WindowEventHandler());
 
     }
+
+    class WindowEventHandler extends WindowAdapter {
+        public void windowClosing(WindowEvent evt) {
+            try {
+                out.writeUTF("Exit:");
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.exit(0);
+        }
+    }
+
 
     public String getMsg() {
         return input_msg.getText();

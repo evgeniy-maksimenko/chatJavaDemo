@@ -36,7 +36,7 @@ public class ChatServer {
     }
 
 
-    public  void actionPerformed() {
+    public void actionPerformed() {
         try {
             for (NetClient nc : clients) {
                 if (nc.in.available() > 0) {
