@@ -6,16 +6,26 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.Timer;
 
 public class ChatServer {
-    ArrayList<NetClient> clients = new ArrayList<NetClient>();
+    CopyOnWriteArrayList<NetClient> clients = new CopyOnWriteArrayList<NetClient>();
 
     public ChatServer() throws IOException {
         ServerSocket ss = new ServerSocket(7777);
-        Timer tm = new Timer(50, new ActionRead());
-        tm.start();
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    actionPerformed();
+                }
+            }
+        }).start();
+
         System.out.println("Server stated");
 
         while (true) {
@@ -25,6 +35,46 @@ public class ChatServer {
         }
     }
 
+
+    public  void actionPerformed() {
+        try {
+            for (NetClient nc : clients) {
+                if (nc.in.available() > 0) {
+                    String str = nc.in.readUTF();
+                    System.out.println("[Trace] in: " + str);
+
+                    String cmd = str.substring(0, str.indexOf(":"));
+                    String inf = str.substring(str.indexOf(":") + 1);
+                    String msg = "";
+
+                    switch (cmd) {
+                        case "Login":
+                            msg = "Connected user " + inf;
+                            nc.login = inf;
+                            break;
+                        case "Msg":
+                            msg = "Msg from " + nc.login + " => " + inf;
+                            break;
+                        case "Exit":
+                            msg = "CLient " + nc.login + " disconnected";
+                            break;
+                    }
+
+                    System.out.println("[Trace] msg: " + msg);
+                    for (NetClient nn : clients) {
+                        if (nc != nn)
+                            nn.out.writeUTF(msg);
+                    }
+
+                }
+            }
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+    }
+
+
+    /*
     class ActionRead implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -61,6 +111,7 @@ public class ChatServer {
             }
         }
     }
+    */
 
     class NetClient {
         Socket cs = null;

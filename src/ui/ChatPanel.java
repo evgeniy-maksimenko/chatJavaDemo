@@ -28,23 +28,21 @@ public class ChatPanel extends JFrame {
         myPanel.setLayout(null);
         myPanel.setBounds(0, 0, 400, 400);
 
-        text = new JTextArea("",5,5);
+        text = new JTextArea("", 5, 5);
         JScrollPane scroll = new JScrollPane(text, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-        scroll.setBounds(5,5,370,100);
+        scroll.setBounds(5, 5, 370, 100);
         myPanel.add(scroll);
 
 
-
-
         JLabel label_msg = new JLabel("msg:");
-        label_msg.setBounds(20,120,70,20);
+        label_msg.setBounds(20, 120, 70, 20);
         myPanel.add(label_msg);
         input_msg = new JTextField();
-        input_msg.setBounds(70,120,150,20);
+        input_msg.setBounds(70, 120, 150, 20);
         myPanel.add(input_msg);
 
         JButton okButton = new JButton("Ok");
-        okButton.setBounds(250,120,100,20);
+        okButton.setBounds(250, 120, 100, 20);
         okButton.addActionListener(new okActionButton());
         myPanel.add(okButton);
 
@@ -56,8 +54,14 @@ public class ChatPanel extends JFrame {
             in = new DataInputStream(cs.getInputStream());
 
 
-            Timer tm = new Timer(50, new ActionRead());
-            tm.start();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    while (true) {
+                        actionPerformed();
+                    }
+                }
+            }).start();
 
             out.writeUTF("Login: " + login);
 
@@ -89,18 +93,17 @@ public class ChatPanel extends JFrame {
         setVisible(true);
     }
 
-    class ActionRead implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                if (in.available() > 0) {
-                    String str = in.readUTF();
-                    text.append(str);
-                }
-            } catch (IOException e1) {
-                e1.printStackTrace();
+
+    public void actionPerformed() {
+        try {
+            if (in.available() > 0) {
+                String str = in.readUTF();
+                text.append(str);
             }
+        } catch (IOException e1) {
+            e1.printStackTrace();
         }
     }
+
 
 }
