@@ -5,6 +5,6 @@ public class ClientRun
 {
 	public static void main(String[] args) throws UnknownHostException, IOException
 	{
-		new ChatClient();
+		new Router();
 	}
 }
