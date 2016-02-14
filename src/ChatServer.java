@@ -74,45 +74,6 @@ public class ChatServer {
     }
 
 
-    /*
-    class ActionRead implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            try {
-                for (NetClient nc : clients) {
-                    if (nc.in.available() > 0) {
-                        String str = nc.in.readUTF();
-                        System.out.println("[Trace] in: " + str);
-
-                        String cmd = str.substring(0, str.indexOf(":"));
-                        String inf = str.substring(str.indexOf(":")+1);
-                        String msg = "";
-
-                        switch (cmd) {
-                            case "Login" : msg = "Connected user " + inf;
-                                nc.login = inf;
-                                break;
-                            case "Msg" : msg = "Msg from " + nc.login + " => " + inf;
-                                break;
-                            case "Exit" : msg = "CLient " + nc.login + " disconnected";
-                                break;
-                        }
-
-                        System.out.println("[Trace] msg: " + msg);
-                        for (NetClient nn : clients) {
-                            if(nc != nn)
-                                nn.out.writeUTF(msg);
-                        }
-
-                    }
-                }
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-        }
-    }
-    */
-
     class NetClient {
         Socket cs = null;
         DataOutputStream out = null;
