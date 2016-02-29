@@ -118,6 +118,11 @@ public class ChatPanel extends JFrame {
         } catch (IOException e1) {
             e1.printStackTrace();
         }
+        try {
+            Thread.sleep(500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
 
