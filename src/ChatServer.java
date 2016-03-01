@@ -50,8 +50,6 @@ public class ChatServer {
         ServerSocket ss = new ServerSocket(7777);
 
 
-
-
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -67,10 +65,27 @@ public class ChatServer {
                             e1.printStackTrace();
                         }
                         try {
-                            Thread.sleep(500);
+                            broadcast.wait();
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }
+                    }
+                }
+            }
+        }).start();
+
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                while (true) {
+                    synchronized (broadcast) {
+                        broadcast.notifyAll();
+                    }
+                    try {
+                        Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
             }
